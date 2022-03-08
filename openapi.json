@@ -1,0 +1,356 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Server, der Todo-Listen, dazugehörige Tasks und Benutzer speichert, abruft und verändert.",
+    "version": 1.0.0,
+    "title": "Todo-Verwaltung",
+    "contact": {
+      "email": "kllju@hotmail.de"
+    },
+  },
+  "host": "petstore.swagger.io",
+  "basePath": "/v2",
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "paths": {
+    "/list/{list_id}": {
+      "get": {
+        "summary": "Liefert alle Einträge einer Todo-Liste zurück",
+        "description": "Übergabeparameter in der URL: ID der gewünschten Liste",
+        "operationId": "getAllEntriesFromListByListId",
+        "parameters": [
+          {
+            "name": "list_id",
+            "in": "path",
+            "description": "ID der gewünschten Liste",
+            "required": true,
+            "type": "integer",
+            "minimum": 1,
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Entry"
+              }
+            }
+          },
+          "404": {
+            "description": "Liste nicht gefunden."
+          }
+        }
+      },
+      "delete": {
+        "summary": "Löscht eine Liste mit allen Einträgen.",
+        "description": "Erwartet die Übergabe der ID der zu löschenden Liste.",
+        "operationId": "deleteListByListId",
+        "parameters": [
+          {
+            "name": "list_id",
+            "in": "path",
+            "description": "ID der zu löschenden Liste",
+            "required": true,
+            "type": "integer",
+            "minimum": 1,
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Löschen erfolgreich."
+          },
+          "404": {
+            "description": "Liste nicht gefunden."
+          }
+        }
+      }
+    },
+    "/list": {
+      "post": {
+        "summary": "Neue Liste hinzufügen.",
+        "description": "Fügt eine komplett neue Todo-Liste hinzu.",
+        "operationId": "addList",
+        "parameters": [
+          {
+            "name": "listObj",
+            "in": "body",
+            "description": "JSON-Objekt der Liste, die hinzugefügt werden soll.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/List"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Einfügen erfolgreich."
+          },
+          "500": {
+            "description": "Server antwortet nicht."
+          }
+        }
+      }
+    },
+    "/list/{list_id}/entry": {
+      "post": {
+        "summary": "Neuen Eintrag hinzufügen.",
+        "description": "Fügt einen neuen Eintrag zu einer bestehenden Todo-Liste hinzu.",
+        "operationId": "addEntryToListByListId",
+        "parameters": [
+          {
+            "name": "list_id",
+            "in": "path",
+            "description": "ID der Liste, zu der der Eintrag hinzugefügt werden soll.",
+            "required": true,
+            "type": "integer",
+            "minimum": 1,
+            "format": "int64"
+          },
+          {
+            "name": "entryObj",
+            "in": "body",
+            "description": "JSON-Objekt des hinzuzufügenden Eintrags.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Entry"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Einfügen erfolgreich."
+          },
+          "500": {
+            "description": "Server antwortet nicht."
+          }
+        }
+      }
+    },
+    "/list/{list_id}/entry/{entry_id}": {
+      "post": {
+        "summary": "Aktualisiert einen bestehenden Eintrag.",
+        "description": "Aktualisiert einen bestehenden Eintrag einer Liste.",
+        "operationId": "updateExistingEntryById",
+        "parameters": [
+          {
+            "name": "list_id",
+            "in": "path",
+            "description": "ID der Liste, in der der Eintrag aktualisiert werden soll.",
+            "required": true,
+            "type": "integer",
+            "minimum": 1,
+            "format": "int64"
+          },
+          {
+            "name": "entry_id",
+            "in": "path",
+            "description": "ID des Eintrags, der aktualisiert werden soll.",
+            "required": true,
+            "type": "integer",
+            "minimum": 1,
+            "format": "int64"
+          },
+          {
+            "name": "entryObj",
+            "in": "body",
+            "description": "JSON-Objekt des zu aktualisierenden Eintrags.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Entry"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Aktualisieren erfolgreich."
+          },
+          "404": {
+            "description": "Übergebene Liste oder übergebener Eintrag wurde nicht gefunden."
+          }
+        }
+      },
+      "delete": {
+        "summary": "Löscht einen Eintrag.",
+        "description": "Löscht einen Eintrag einer bestimmten Liste.",
+        "operationId": "deleteEntryById",
+        "parameters": [
+          {
+            "name": "list_id",
+            "in": "path",
+            "description": "ID der Liste, in der der Eintrag gelöscht werden soll.",
+            "required": true,
+            "type": "integer",
+            "minimum": 1,
+            "format": "int64"
+          },
+          {
+            "name": "entry_id",
+            "in": "path",
+            "description": "ID des Eintrags, der gelöscht werden soll.",
+            "required": true,
+            "type": "integer",
+            "minimum": 1,
+            "format": "int64"
+          },
+        ],
+        "responses": {
+          "200": {
+            "description": "Löschen erfolgreich."
+          },
+          "404": {
+            "description": "Liste oder Eintrag nicht gefunden."
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "summary": "Ruft Liste aller User ab.",
+        "description": "Liefert eine Liste aller momentan im System befindlichen User zurück.",
+        "operationId": "getAllUsers",
+        "responses": {
+          "200": {
+            "description": "Abrufen der User erfolgreich",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "500": {
+            "description": "Server ist nicht erreichbar."
+          }
+        },
+      }
+    },
+    "/user": {
+      "post": {
+        "summary": "Fügt einen neuen User hinzu.",
+        "description": "Anhand eines übergebenen User-Objektes wird ein neuer User angelegt.",
+        "operationId": "addUser",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "User, der hinzugefügt werden soll",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Einfügen des Users erfolgreich durchgeführt.",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "500": {
+            "description": "Server ist nicht erreichbar"
+          }
+        }
+      }
+    },
+    "/user/{user_id}": {
+      "delete": {
+        "summary": "Löscht einen User.",
+        "description": "",
+        "operationId": "deleteUserById",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "ID des Users, der gelöscht werden soll.",
+            "required": true,
+            "type": "integer",
+            "minimum": 1,
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Löschen erfolgreich."
+          },
+          "404": {
+            "description": "User nicht gefunden."
+          }
+        }
+      }
+    },
+  },
+  "definitions": {
+    "Entry": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "beschreibung": {
+          "type": "string"
+        },
+        "user": {
+          "$ref": "#/definitions/User"
+        },
+        "list": {
+          "$ref": "#/definitions/List"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "user",
+        "list"
+      ],
+      "xml": {
+        "name": "Entry"
+      }
+    },
+    "List": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string",
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ],
+      "xml": {
+        "name": "List"
+      }
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ],
+      "xml": {
+        "name": "User"
+      }
+    }
+  }
+}
