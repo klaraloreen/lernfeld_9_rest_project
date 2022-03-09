@@ -89,7 +89,10 @@
         ],
         "responses": {
           "200": {
-            "description": "Einfügen erfolgreich."
+            "description": "Einfügen erfolgreich.",
+            "schema": {
+              "$ref": "#/definitions/List"
+            }
           },
           "500": {
             "description": "Server antwortet nicht."
